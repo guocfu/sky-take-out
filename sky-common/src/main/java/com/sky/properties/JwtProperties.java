@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+// ConfigurationProperties表示该类是配置属性类，用于封装配置文件（springboot配置文件）中的一些配置项
 @Component
 @ConfigurationProperties(prefix = "sky.jwt")
 @Data

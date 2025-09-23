@@ -43,6 +43,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      */
     @Bean
     public Docket docket() {
+        log.info("准备生成接口文档");
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("苍穹外卖项目接口文档")
                 .version("2.0")
@@ -58,10 +59,15 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     }
 
     /**
-     * 设置静态资源映射
+     * 设置静态资源映射：
+     *  1.当前访问http://localhost8080/doc.html来到前端控制器DispatcherServlet处理请求
+     *  2.DispatcherServlet会根据请求路径（/doc.html）查找handle处理器（控制器的方法），默认找不到
+     *  3.这里对/doc.html路径进行了映射，找不到后来/NETA-INF/resources/ 去找资源返回
      * @param registry
      */
+    // swagger是在java服务器上的，不是在nginx上，不是前端资源，因此端口号为8080
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        log.info("开始设置静态资源映射");
         registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
