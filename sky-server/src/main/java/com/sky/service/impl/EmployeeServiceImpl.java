@@ -16,6 +16,7 @@ import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
+import com.sky.vo.SalesTop10ReportVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,6 +107,32 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<Employee> records = page.getResult();
         PageResult pageResult = new PageResult(total, records);
         return pageResult;
+    }
+
+    /**
+     * 启用禁用员工账号
+     * @param status
+     * @param id
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        // update employee status=? where id=?
+
+        // 使用update方法传入employee，统一操作
+
+        // 两种创建Employee对象的方法
+        // Employee employee = new Employee();
+        // employee.setStatus(status);
+        // employee.setId(id);
+
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+
+        employeeMapper.update(employee);
+
+
     }
 
 }
