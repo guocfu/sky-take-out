@@ -87,7 +87,6 @@ public class DishController {
     @ApiOperation("根据分类id查询菜品")
     public Result<List<Dish>> list(Long categoryId) {
         List<Dish> list = dishService.getByCategoryId(categoryId);
-
         return Result.success(list);
     }
 }
