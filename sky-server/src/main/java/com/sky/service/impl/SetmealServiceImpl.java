@@ -3,10 +3,13 @@ package com.sky.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.annotation.AutoFill;
+import com.sky.constant.MessageConstant;
+import com.sky.constant.StatusConstant;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SetmealServiceImpl implements SetmealService {
@@ -65,5 +69,26 @@ public class SetmealServiceImpl implements SetmealService {
         List<SetmealVO> records = page.getResult();
         PageResult pageResult = new PageResult(total,records);
         return pageResult;
+    }
+
+    /**
+     * 批量删除套餐
+     * @param ids
+     */
+    @Transactional
+    public void deleteBatch(List<Long> ids) {
+        // 判断套餐是否起售中
+        ids.forEach(setmealId -> {
+            Setmeal setmeal = setmealMapper.getById(setmealId);
+            if(StatusConstant.ENABLE==setmeal.getStatus()){
+                // 起售中的套餐不能删除
+                throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
+            }
+        });
+        ids.forEach(setmealId -> {
+            // 分别删除套餐表和套餐菜品关系表中的数据
+            setmealMapper.deleteById(setmealId);
+            setmealDishMapper.deleteBySetmealId(setmealId);
+        });
     }
 }
