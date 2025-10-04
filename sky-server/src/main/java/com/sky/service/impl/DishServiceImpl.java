@@ -156,4 +156,17 @@ public class DishServiceImpl implements DishService {
         }
 
     }
+
+    @Override
+    public List<Dish> getByCategoryId(Long categoryId) {
+        Dish dish = Dish.builder()
+                .categoryId(categoryId)
+                .status(StatusConstant.ENABLE)
+                .build();
+        // 封装到Dish对象中，统一查询操作
+        List<Dish> list = dishMapper.list(dish);
+        return list;
+
+    }
+
 }
