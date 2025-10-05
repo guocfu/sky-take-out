@@ -55,4 +55,12 @@ public interface DishMapper {
     void update(Dish dish);
 
     List<Dish> list(Dish dish);
+
+    /**
+     * 关联菜品表和菜品套餐表，分解套餐id查询相应的菜品信息
+     * @param setmealId
+     * @return
+     */
+    @Select("select * from dish d left join setmeal_dish s on d.id=s.dish_id where s.setmeal_id=#{setmealId}")
+    List<Dish> getBySetmealId(Long setmealId);
 }
