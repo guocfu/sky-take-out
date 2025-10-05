@@ -55,6 +55,11 @@ public interface DishMapper {
     @AutoFill(value = OperationType.UPDATE)
     void update(Dish dish);
 
+    /**
+     * 动态条件查询菜品
+     * @param dish
+     * @return
+     */
     List<Dish> list(Dish dish);
 
     /**
@@ -65,11 +70,4 @@ public interface DishMapper {
     @Select("select d.* from dish d left join setmeal_dish s on d.id=s.dish_id where s.setmeal_id=#{setmealId}")
     List<Dish> getBySetmealId(Long setmealId);
 
-    /**
-     * 菜品起售或停售
-     * @param status
-     * @param id
-     */
-    @Update("update dish set status=#{status} where id=#{id}")
-    void startOrStop(Integer status, Long id);
 }
