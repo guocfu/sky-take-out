@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface SetmealMapper {
 
@@ -43,4 +45,12 @@ public interface SetmealMapper {
 
     @AutoFill(value = OperationType.UPDATE)
     void update(Setmeal setmeal);
+
+    /**
+     * 关联套餐表和套餐菜品表，根据菜品id查询套餐信息（用于判断菜品对应的套餐是否售卖中）
+     * @param dishId
+     * @return
+     */
+    @Select("select s.* from setmeal s left join setmeal_dish sd on s.id=sd.setmeal_id where sd.dish_id=#{dishId}")
+    List<Setmeal> getSetmealByDishId(Long dishId);
 }

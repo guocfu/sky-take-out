@@ -8,10 +8,13 @@ import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.entity.Setmeal;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.exception.DishDisableFailedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -36,6 +39,9 @@ public class DishServiceImpl implements DishService {
 
     @Autowired
     private SetmealDishMapper setmealDishMapper;
+
+    @Autowired
+    private SetmealMapper setmealMapper;
     /**
      * 新增菜品和对应的口味，涉及到插入两张表，需要开始事务
      * @param dishDTO
@@ -167,6 +173,28 @@ public class DishServiceImpl implements DishService {
         List<Dish> list = dishMapper.list(dish);
         return list;
 
+    }
+
+    /**
+     * 菜品的起售停售
+     * @param status
+     * @param id
+     */
+    public void startOrStop(Integer status, Long id) {
+        // 如果菜品要停售，但是有关联的套餐在售卖，则停售失败
+        if(StatusConstant.DISABLE==status){
+            List<Setmeal> setmealList = setmealMapper.getSetmealByDishId(id);
+            if(setmealList!=null&&setmealList.size()>0) {
+                setmealList.forEach(setmeal -> {
+                    if (StatusConstant.ENABLE == setmeal.getStatus()) {
+                        throw new DishDisableFailedException("当前菜品有套餐正在售卖，不能停售");
+                    }
+                });
+            }
+        }
+
+        // 修改菜品状态
+        dishMapper.startOrStop(status, id);
     }
 
 }
