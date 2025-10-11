@@ -3,10 +3,12 @@ package com.sky.mapper;
 import com.github.pagehelper.Page;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
+import com.sky.entity.TurnOut;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -78,4 +80,6 @@ public interface OrderMapper {
      * @return
      */
     Double sumByMap(Map map);
+
+    List<TurnOut> sumByMapPro(LocalDate begin, LocalDate end, Integer status);
 }
